@@ -46,7 +46,7 @@ pipeline {
 		       [
 			       artifactId: 'maven-project', 
 			       classifier: '', 
-			       file: 'workspace/kubernetes/webapp/target/webapp.war', 
+			       file: 'webapp/target/webapp.war', 
 			       type: 'war'
 		       ]
 	       ], 
