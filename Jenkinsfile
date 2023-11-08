@@ -40,11 +40,23 @@ pipeline {
            }
        }
 
-	     stage("Quality Gate"){
+	     stage("upload war to nexus"){
            steps {
-               script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-jenkins'
-                }	
+               nexusArtifactUploader artifacts: [
+		       [
+			       artifactId: 'maven-project', 
+			       classifier: '', 
+			       file: 'target/Maven Project-1.0.0.war', 
+			       type: 'war'
+		       ]
+	       ], 
+		       credentialsId: 'nexus3', 
+		       groupId: 'com.example.maven-project',
+		       nexusUrl: '13.232.119.162:8081',
+		       nexusVersion: 'nexus3', 
+		       protocol: 'http',
+		       repository: 'http://13.232.119.162:8081/repository/maven-releases/', 
+		       version: '1.0.0'
             }
 
         }
