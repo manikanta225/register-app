@@ -39,6 +39,14 @@ pipeline {
 	           }	
            }
        }
+	    stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-jenkins'
+                }	
+            }
+
+        }
 
 	     stage("upload war to nexus"){
            steps {
@@ -56,7 +64,7 @@ pipeline {
 		       nexusVersion: 'nexus3', 
 		       protocol: 'http',
 		       repository: 'maven-releases', 
-		       version: '2.0.0'
+		       version: '3.0.0'
             }
 
         }
