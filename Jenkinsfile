@@ -4,6 +4,15 @@ pipeline {
         jdk 'Java17'
         maven 'Maven3'
     }
+	 environment {
+	    APP_NAME = "register-app"
+            RELEASE = "1.0.0"
+            DOCKER_USER = "manikanta225"
+            DOCKER_PASS = 'dockerhub'
+            IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+            IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+	    JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+    }
     
     stages{
         stage("Cleanup Workspace"){
@@ -39,7 +48,7 @@ pipeline {
 	           }	
            }
        }
-	    stage("Quality Gate"){
+	stage("Quality Gate"){
            steps {
                script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-jenkins'
@@ -48,7 +57,7 @@ pipeline {
 
         }
 
-	     stage("upload war to nexus"){
+	stage("upload war to nexus"){
            steps {
                nexusArtifactUploader artifacts: [
 		       [
@@ -68,5 +77,20 @@ pipeline {
             }
 
         }
+	stage("Build & Push Docker Image") {
+            steps {
+                script {
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
+
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
+                    }
+                }
+            }
+
+       }
 
     }}
