@@ -4,45 +4,42 @@ pipeline {
         jdk 'Java17'
         maven 'Maven3'
     }
-	 environment {
+	environment {
 	    APP_NAME = "register-app"
             RELEASE = "1.0.0"
             DOCKER_USER = "manikanta225"
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-	    
+	}
     
     stages{
-        stage("Cleanup Workspace"){
+	    stage("Cleanup Workspace"){
                 steps {
-                cleanWs()
+			cleanWs()
                 }
         }
-
-        stage("Checkout from SCM"){
+	    stage("Checkout from SCM"){
                 steps {
-                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/manikanta225/register-app.git'
+			git branch: 'main', credentialsId: 'github', url: 'https://github.com/manikanta225/register-app.git'
                 }
         }
-
-        stage("Build Application"){
-            steps {
-                sh "mvn clean package"
+	    stage("Build Application"){
+		    steps {
+			    sh "mvn clean package"
             }
 
        }
-
-       stage("Test Application"){
-           steps {
-                 sh "mvn test"
+	    stage("Test Application"){
+		    steps {
+			    sh "mvn test"
            }
        }
-        stage("SonarQube Analysis"){
-           steps {
-	           script {
-		        withSonarQubeEnv(credentialsId: 'sonar-jenkins') { 
-                        sh "mvn sonar:sonar"
+	    stage("SonarQube Analysis"){
+		    steps {
+			    script {
+				    withSonarQubeEnv(credentialsId: 'sonar-jenkins') { 
+					    sh "mvn sonar:sonar"
 		        }
 	           }	
            }
@@ -94,4 +91,4 @@ pipeline {
     
 
     }}
-}
+
