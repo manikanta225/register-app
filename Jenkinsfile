@@ -52,7 +52,7 @@ pipeline {
 	       ], 
 		       credentialsId: 'nexus3', 
 		       groupId: 'com.example.maven-project',
-		       nexusUrl: '13.232.119.162:8081',
+		       nexusUrl: '15.207.112.122:8081',
 		       nexusVersion: 'nexus3', 
 		       protocol: 'http',
 		       repository: 'maven-releases', 
